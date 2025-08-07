@@ -2,17 +2,26 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Balances, useWallet } from "@crossmint/client-sdk-react-ui";
+import {
+  Balances,
+  useCrossmint,
+  useWallet,
+} from "@crossmint/client-sdk-react-ui";
+import { cn } from "@/lib/utils";
 
 export function WalletBalance() {
+  const {
+    crossmint: { apiKey, jwt },
+  } = useCrossmint();
   const { wallet } = useWallet();
   const [balances, setBalances] = useState<Balances | null>(null);
+  const [isFunding, setIsFunding] = useState(false);
 
   useEffect(() => {
     async function fetchBalances() {
       if (!wallet) return;
       try {
-        const balances = await wallet.balances();
+        const balances = await wallet.balances(["usdxm"]);
         setBalances(balances);
       } catch (error) {
         console.error("Error fetching wallet balances:", error);
@@ -26,48 +35,90 @@ export function WalletBalance() {
     return Number(balance).toFixed(2);
   };
 
+  const usdxmToken = balances?.tokens.find((token) => token.symbol === "usdxm");
+  const usdxmBalance = formatBalance(usdxmToken?.amount || "0");
+
+  const handleFund = async () => {
+    if (!wallet) {
+      return;
+    }
+    if (apiKey.includes("_production_")) {
+      alert("Crossmint faucet is not available in production.");
+      return;
+    }
+
+    setIsFunding(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/v1-alpha2/wallets/${wallet.address}/balances`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+            Authorization: `Bearer ${jwt}`,
+          },
+          body: JSON.stringify({
+            amount: 10,
+            token: "usdxm",
+            chain: wallet.chain,
+          }),
+        }
+      );
+      if (response != null && !response.ok) {
+        return alert(`Failed to get USDXM: ${response.statusText}`);
+      }
+      alert(
+        "10 USDXM sent to your wallet! Refresh the page to see your new balance. Balance may take a few seconds to update."
+      );
+    } catch (error) {
+      alert(`Error getting test USDXM: ${error}`);
+    } finally {
+      setIsFunding(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-4">
+      {/* Header with Icon and Info */}
+      <div className="flex items-center gap-3">
+        <Image src="/usdxm.svg" alt="USDC" width={24} height={24} />
         <div className="flex items-center gap-2">
-          <Image src="/sol.svg" alt="Solana" width={24} height={24} />
-          <p className="font-medium">Solana</p>
-        </div>
-        <div className="text-gray-700 font-medium">
-          {formatBalance(balances?.nativeToken.amount || "0")} SOL
-        </div>
-      </div>
-      <div className="border-t my-1"></div>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <Image src="/usdc.svg" alt="USDC" width={24} height={24} />
-          <p className="font-medium">USDC</p>
-        </div>
-        <div className="text-gray-700 font-medium">
-          $ {formatBalance(balances?.usdc.amount || "0")}
+          <h3 className="text-lg font-semibold">USDXM balance</h3>
+          <div className="relative group">
+            <div className="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center cursor-help">
+              <span className="text-gray-500 text-xs font-medium">i</span>
+            </div>
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+              USDXM is a test stablecoin
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2 mt-2">
-        <a
-          href="https://faucet.solana.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 text-sm py-1.5 px-3 rounded-md bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+
+      {/* Balance Display */}
+      <div className="text-4xl font-bold text-gray-900">$ {usdxmBalance}</div>
+
+      {/* Add Money Button */}
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={handleFund}
+          disabled={isFunding}
+          data-fund-button
+          className={cn(
+            "w-full py-3 px-4 rounded-full text-sm font-medium bg-[#020617] text-[#F1F5F9] hover:bg-[#020617]/80 transition-colors",
+            isFunding
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-gray-900 text-white hover:bg-gray-800"
+          )}
         >
-          + Get free test SOL
-        </a>
-        <a
-          href="https://faucet.circle.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 text-sm py-1.5 px-3 rounded-md bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-        >
-          + Get free test USDC
-        </a>
-      </div>
-      <div className="text-gray-500 text-xs">
-        Refresh the page after topping up. Balance may take a few seconds to
-        update.
+          {isFunding ? "Adding money..." : "Add money"}
+        </button>
+        <p className="text-gray-500 text-xs text-center">
+          Refresh the page after topping up. Balance may take a few seconds to
+          update.
+        </p>
       </div>
     </div>
   );

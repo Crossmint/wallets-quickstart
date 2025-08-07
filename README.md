@@ -19,9 +19,9 @@ Create and interact with Crossmint wallets. This quickstart uses Crossmint Auth 
 
 **Learn how to:**
 - Create a wallet
-- View its balance for SOL and SPL tokens
-- Send USDC or SOL to another wallet
-- Add permissions to allow third parties to sign transactions on behalf of your wallet
+- View its balance for USDXM and native tokens
+- Send USDXM or native tokens to another wallet
+- Add delegated signers to allow third parties to sign transactions on behalf of your wallet
 
 ## Deploy
 Easily deploy the template to Vercel with the button below. You will need to set the required environment variables in the Vercel dashboard.

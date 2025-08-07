@@ -5,19 +5,15 @@ import { useWallet } from "@crossmint/client-sdk-react-ui";
 
 export function TransferFunds() {
   const { wallet } = useWallet();
-  const [token, setToken] = useState<"sol" | "usdc" | null>("sol");
+  const [token, setToken] = useState<string>("usdxm");
   const [recipient, setRecipient] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
+  const [amountInput, setAmountInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [txnHash, setTxnHash] = useState<string | null>(null);
+  const [explorerLink, setExplorerLink] = useState<string | null>(null);
 
   async function handleOnTransfer() {
-    if (
-      wallet == null ||
-      token == null ||
-      recipient == null ||
-      amount == null
-    ) {
+    if (wallet == null || recipient == null || amount == null) {
       alert("Transfer: missing required fields");
       return;
     }
@@ -25,7 +21,7 @@ export function TransferFunds() {
     try {
       setIsLoading(true);
       const txn = await wallet.send(recipient, token, amount.toString());
-      setTxnHash(`https://solscan.io/tx/${txn}?cluster=devnet`);
+      setExplorerLink(txn.explorerLink);
     } catch (err) {
       console.error("Transfer: ", err);
       alert("Transfer: " + err);
@@ -35,81 +31,80 @@ export function TransferFunds() {
   }
 
   return (
-    <div className="bg-white flex flex-col gap-3 rounded-xl border shadow-sm p-5">
+    <div className="flex flex-col gap-4">
       <div>
-        <h2 className="text-lg font-medium">Transfer funds</h2>
+        <h3 className="text-lg font-semibold mb-1">Transfer funds</h3>
         <p className="text-sm text-gray-500">Send funds to another wallet</p>
       </div>
-      <div className="flex flex-col gap-3 w-full">
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-2 flex-1">
-            <label className="text-sm font-medium">Token</label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="token"
-                  className="h-4 w-4"
-                  checked={token === "usdc"}
-                  onChange={() => setToken("usdc")}
-                />
-                <span>USDC</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="token"
-                  className="h-4 w-4"
-                  checked={token === "sol"}
-                  onChange={() => setToken("sol")}
-                />
-                <span>SOL</span>
-              </label>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 flex-1">
-            <label className="text-sm font-medium">Amount</label>
-            <input
-              type="number"
-              className="w-full px-3 py-2 border rounded-md text-sm"
-              placeholder="0.00"
-              onChange={(e) => setAmount(Number(e.target.value))}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">Recipient wallet</label>
-          <input
-            type="text"
-            className="w-full px-3 py-2 border rounded-md text-sm"
-            placeholder="Enter wallet address"
-            onChange={(e) => setRecipient(e.target.value)}
-          />
-        </div>
+
+      {/* Amount Input */}
+      <div className="relative">
+        <span className="absolute left-0 top-0 text-4xl font-bold text-gray-900 pointer-events-none">
+          $
+        </span>
+        <input
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
+          value={amountInput}
+          className="text-4xl font-bold text-gray-900 bg-transparent border-none outline-none w-full pl-8"
+          placeholder="0.00"
+          onChange={(e) => {
+            const value = e.target.value;
+            setAmountInput(value);
+
+            if (value === "") {
+              setAmount(null);
+            } else {
+              const numValue = parseFloat(value);
+              if (!isNaN(numValue)) {
+                setAmount(numValue);
+              }
+            }
+          }}
+          style={{
+            fontFamily: "inherit",
+          }}
+        />
       </div>
-      <div className="flex flex-col gap-2 w-full">
-        <button
-          className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-            isLoading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-accent text-white hover:bg-accent/80"
-          }`}
-          onClick={handleOnTransfer}
-          disabled={isLoading}
+
+      {/* Transfer To Input */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium text-gray-700">Transfer to</label>
+        <input
+          type="text"
+          value={recipient || ""}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Enter wallet or email address"
+          onChange={(e) => setRecipient(e.target.value || null)}
+        />
+      </div>
+
+      {/* Transfer Button */}
+      <button
+        className={`w-full py-3 px-4 rounded-full text-sm font-medium transition-colors ${
+          isLoading || !recipient || !amount
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-gray-900 text-white hover:bg-gray-800"
+        }`}
+        onClick={handleOnTransfer}
+        disabled={isLoading || !recipient || !amount}
+      >
+        {isLoading ? "Transferring..." : "Transfer"}
+      </button>
+
+      {/* Explorer Link */}
+      {explorerLink && !isLoading && (
+        <a
+          href={explorerLink}
+          className="text-sm text-blue-600 hover:text-blue-800 text-center transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {isLoading ? "Transferring..." : "Transfer"}
-        </button>
-        {txnHash && !isLoading && (
-          <a
-            href={txnHash}
-            className="text-sm text-gray-500 text-center"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            → View on Solscan (refresh to update balance)
-          </a>
-        )}
-      </div>
+          → View transaction
+        </a>
+      )}
     </div>
   );
 }
