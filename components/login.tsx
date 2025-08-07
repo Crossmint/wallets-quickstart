@@ -8,7 +8,7 @@ export function LoginButton() {
 
   return (
     <button
-      className="flex items-center gap-2 py-2 px-3 rounded-full text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
+      className="flex items-center gap-2 py-2 px-3 rounded-full text-sm m-auto font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
       onClick={login}
     >
       Login

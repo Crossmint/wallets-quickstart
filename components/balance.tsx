@@ -50,7 +50,7 @@ export function WalletBalance() {
     setIsFunding(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1-alpha2/wallets/${wallet.address}/balances`,
+        `https://staging.crossmint.com/api/v1-alpha2/wallets/${wallet.address}/balances`,
         {
           method: "POST",
           headers: {
@@ -82,7 +82,7 @@ export function WalletBalance() {
     <div className="flex flex-col gap-4">
       {/* Header with Icon and Info */}
       <div className="flex items-center gap-3">
-        <Image src="/usdxm.svg" alt="USDC" width={24} height={24} />
+        <Image src="/usdxm.svg" alt="USDXM" width={24} height={24} />
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold">USDXM balance</h3>
           <div className="relative group">
@@ -107,10 +107,10 @@ export function WalletBalance() {
           disabled={isFunding}
           data-fund-button
           className={cn(
-            "w-full py-3 px-4 rounded-full text-sm font-medium bg-[#020617] text-[#F1F5F9] hover:bg-[#020617]/80 transition-colors",
+            "w-full py-3 px-4 rounded-full text-sm font-medium bg-primary text-primary-foreground transition-colors cursor-pointer",
             isFunding
               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-gray-900 text-white hover:bg-gray-800"
+              : "hover:bg-primary/80"
           )}
         >
           {isFunding ? "Adding money..." : "Add money"}

@@ -6,6 +6,7 @@ import {
   useWallet,
   type DelegatedSigner,
 } from "@crossmint/client-sdk-react-ui";
+import { cn } from "@/lib/utils";
 
 export function DelegatedSigners() {
   const { wallet } = useWallet();
@@ -81,11 +82,12 @@ export function DelegatedSigners() {
           onChange={(e) => setNewSigner(e.target.value)}
         />
         <button
-          className={`w-full py-3 px-4 rounded-full text-sm font-medium transition-colors ${
+          className={cn(
+            "w-full py-3 px-4 rounded-full text-sm font-medium transition-colors",
             isAdding || !newSigner
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-gray-900 text-white hover:bg-gray-800"
-          }`}
+              : "bg-primary text-primary-foreground hover:bg-primary/80"
+          )}
           onClick={addNewSigner}
           disabled={isAdding || !newSigner}
         >

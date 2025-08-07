@@ -9,6 +9,7 @@ import { DelegatedSigners } from "@/components/delegated-signers";
 import { LogoutButton } from "@/components/logout";
 import { LoginButton } from "@/components/login";
 import { Dialog } from "@/components/dialog";
+import { Activity } from "@/components/activity";
 
 export function HomeContent() {
   const { wallet, status: walletStatus } = useWallet();
@@ -171,34 +172,7 @@ export function HomeContent() {
             <TransferFunds />
           </div>
 
-          {/* Activity Section */}
-          <div className="bg-white rounded-2xl border shadow-sm p-6">
-            <div className="flex flex-col h-full">
-              <h3 className="text-lg font-semibold mb-4">Activity</h3>
-              <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
-                <h4 className="font-medium text-gray-900 mb-2">
-                  Your activity feed
-                </h4>
-                <p className="text-gray-500 text-sm mb-4">
-                  When you add and send money it shows up here. Get started with
-                  adding money to your account
-                </p>
-                <button
-                  onClick={() => {
-                    // Trigger the fund function from balance component
-                    const fundButton =
-                      document.querySelector("[data-fund-button]");
-                    if (fundButton instanceof HTMLElement) {
-                      fundButton.click();
-                    }
-                  }}
-                  className="px-6 py-2.5 rounded-full text-sm font-medium bg-[#020617] text-[#F1F5F9] hover:bg-[#020617]/80 transition-colors"
-                >
-                  Add money
-                </button>
-              </div>
-            </div>
-          </div>
+          <Activity />
         </div>
       </div>
     </div>

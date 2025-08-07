@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useWallet } from "@crossmint/client-sdk-react-ui";
+import { cn } from "@/lib/utils";
 
 export function TransferFunds() {
   const { wallet } = useWallet();
-  const [token, setToken] = useState<string>("usdxm");
   const [recipient, setRecipient] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
   const [amountInput, setAmountInput] = useState<string>("");
@@ -20,7 +20,7 @@ export function TransferFunds() {
 
     try {
       setIsLoading(true);
-      const txn = await wallet.send(recipient, token, amount.toString());
+      const txn = await wallet.send(recipient, "usdxm", amount.toString());
       setExplorerLink(txn.explorerLink);
     } catch (err) {
       console.error("Transfer: ", err);
@@ -83,11 +83,12 @@ export function TransferFunds() {
 
       {/* Transfer Button */}
       <button
-        className={`w-full py-3 px-4 rounded-full text-sm font-medium transition-colors ${
+        className={cn(
+          "w-full py-3 px-4 rounded-full text-sm font-medium transition-colors",
           isLoading || !recipient || !amount
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-gray-900 text-white hover:bg-gray-800"
-        }`}
+        )}
         onClick={handleOnTransfer}
         disabled={isLoading || !recipient || !amount}
       >
