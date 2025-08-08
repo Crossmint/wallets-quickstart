@@ -111,7 +111,7 @@ export function HomeContent() {
                     >
                       {copiedAddress ? (
                         <Image
-                          src="/check.svg"
+                          src="/circle-check-big.svg"
                           alt="Copied"
                           width={16}
                           height={16}
