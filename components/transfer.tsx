@@ -76,7 +76,7 @@ export function TransferFunds() {
           type="text"
           value={recipient || ""}
           className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Enter wallet or email address"
+          placeholder="Enter wallet address"
           onChange={(e) => setRecipient(e.target.value || null)}
         />
       </div>

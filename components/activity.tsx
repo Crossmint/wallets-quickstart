@@ -26,7 +26,7 @@ export function Activity() {
   }, [wallet]);
 
   const formatAddress = (address: string) => {
-    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+    return `${address.slice(0, 6)}...${address.slice(-6)}`;
   };
 
   const formatTimestamp = (timestamp: number) => {
@@ -125,7 +125,7 @@ export function Activity() {
                           {isIncoming ? "+" : "-"}${event.amount}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {event?.token_symbol ?? "USDXM"}
+                          {event?.token_symbol}
                         </div>
                       </div>
                     </div>

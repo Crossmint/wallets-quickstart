@@ -91,8 +91,8 @@ export function HomeContent() {
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm text-gray-900 overflow-auto">
                       {walletAddress
-                        ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(
-                            -4
+                        ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(
+                            -6
                           )}`
                         : ""}
                     </span>
