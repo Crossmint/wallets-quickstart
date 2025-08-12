@@ -21,8 +21,9 @@ export function Activity() {
         setHasInitiallyLoaded(true);
       }
     };
+
     fetchActivity();
-    // Refresh activity every 8 seconds
+    // Poll every 8s—txns may take a few seconds to appear; 8s is a good balance.
     const interval = setInterval(() => {
       fetchActivity();
     }, 8000);
