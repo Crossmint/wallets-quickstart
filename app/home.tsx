@@ -5,10 +5,8 @@ import { useAuth, useWallet } from "@crossmint/client-sdk-react-ui";
 import Image from "next/image";
 import { WalletBalance } from "@/components/balance";
 import { TransferFunds } from "@/components/transfer";
-import { DelegatedSigners } from "@/components/delegated-signers";
 import { LogoutButton } from "@/components/logout";
 import { LoginButton } from "@/components/login";
-import { Dialog } from "@/components/dialog";
 import { Activity } from "@/components/activity";
 
 export function HomeContent() {
@@ -60,7 +58,7 @@ export function HomeContent() {
         />
         <h1 className="text-2xl font-semibold mb-2">Wallets Quickstart</h1>
         <p className="text-gray-600 text-sm">
-          The easiest way to build onchain
+          Create and interact with Crossmint wallets
         </p>
       </div>
 
@@ -144,24 +142,6 @@ export function HomeContent() {
                   <span className="text-sm text-gray-900 capitalize text-nowrap overflow-auto">
                     {wallet?.chain}
                   </span>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">
-                      Delegated signers
-                    </span>
-                    <Dialog
-                      title="Manage delegated signers"
-                      trigger={
-                        <button className="text-green-600 w-fit text-sm font-medium hover:text-green-700 transition-colors text-left">
-                          Manage
-                        </button>
-                      }
-                    >
-                      <DelegatedSigners />
-                    </Dialog>
-                  </div>
                 </div>
               </div>
             </div>
