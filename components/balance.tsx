@@ -49,6 +49,7 @@ export function WalletBalance() {
 
     setIsFunding(true);
     try {
+      const fundingAmount = 10;
       const response = await fetch(
         `https://staging.crossmint.com/api/v1-alpha2/wallets/${wallet.address}/balances`,
         {
@@ -59,7 +60,7 @@ export function WalletBalance() {
             Authorization: `Bearer ${jwt}`,
           },
           body: JSON.stringify({
-            amount: 10,
+            amount: fundingAmount,
             token: "usdxm",
             chain: wallet.chain,
           }),
@@ -68,9 +69,18 @@ export function WalletBalance() {
       if (response != null && !response.ok) {
         return alert(`Failed to get USDXM: ${response.statusText}`);
       }
-      alert(
-        "10 USDXM sent to your wallet! Refresh the page to see your new balance. Balance may take a few seconds to update."
-      );
+
+      // Optimistic UI update
+      setBalances((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          tokens: prev.tokens.map((token) => ({
+            ...token,
+            amount: (Number(token.amount) + fundingAmount).toString(),
+          })),
+        };
+      });
     } catch (error) {
       alert(`Error getting test USDXM: ${error}`);
     } finally {
@@ -116,7 +126,7 @@ export function WalletBalance() {
           {isFunding ? "Adding money..." : "Add money"}
         </button>
         <p className="text-gray-500 text-xs text-center">
-          Refresh the page after topping up. Balance may take a few seconds to
+          Refresh the page after transferring. Balance may take a few seconds to
           update.
         </p>
       </div>

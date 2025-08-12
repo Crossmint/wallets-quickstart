@@ -6,23 +6,27 @@ import { cn } from "@/lib/utils";
 export function Activity() {
   const { wallet } = useWallet();
   const [activity, setActivity] = useState<Activity | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
 
   useEffect(() => {
     if (!wallet) return;
 
     const fetchActivity = async () => {
-      setIsLoading(true);
       try {
         const activity = await wallet.experimental_activity();
         setActivity(activity);
       } catch (error) {
         console.error("Failed to fetch activity:", error);
       } finally {
-        setIsLoading(false);
+        setHasInitiallyLoaded(true);
       }
     };
     fetchActivity();
+    // Refresh activity every 8 seconds
+    const interval = setInterval(() => {
+      fetchActivity();
+    }, 8000);
+    return () => clearInterval(interval);
   }, [wallet]);
 
   const formatAddress = (address: string) => {
@@ -58,7 +62,7 @@ export function Activity() {
       <div className="flex flex-col h-full">
         <h3 className="text-lg font-semibold mb-4">Activity</h3>
 
-        {isLoading ? (
+        {!hasInitiallyLoaded ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-gray-500 text-sm">Loading activity...</div>
           </div>
@@ -66,7 +70,9 @@ export function Activity() {
           <div className="flex-1 overflow-hidden">
             <div className="max-h-[378px] overflow-y-auto space-y-3">
               {activity.events.map((event, index) => {
-                const isIncoming = event.to_address === wallet?.address;
+                const isIncoming =
+                  event.to_address.toLowerCase() ===
+                  wallet?.address.toLowerCase();
                 return (
                   <div
                     key={event.transaction_hash}

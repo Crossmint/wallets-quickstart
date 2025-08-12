@@ -19,7 +19,7 @@ Create and interact with Crossmint wallets. This quickstart uses Crossmint Auth 
 
 **Learn how to:**
 - Create a wallet
-- View its balance for USDXM and native tokens
+- View its balance for USDXM (USDXM is a test stablecoin by Crossmint) and native tokens
 - View wallet transaction activity
 - Send USDXM or native tokens to another wallet
 
