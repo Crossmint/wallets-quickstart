@@ -20,7 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CrossmintProvider apiKey={process.env.NEXT_PUBLIC_CROSSMINT_API_KEY || ""}>
       <CrossmintAuthProvider
-        authModalTitle="Wallets Quickstart"
+        authModalTitle="Welcome"
         loginMethods={["google", "email"]}
         appearance={customAppearance}
       >

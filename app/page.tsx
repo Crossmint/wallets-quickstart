@@ -1,70 +1,41 @@
-import Image from "next/image";
-import { HomeContent } from "@/app/home";
+"use client";
+
+import { useRef } from "react";
+import { useAuth, useWallet } from "@crossmint/client-sdk-react-ui";
+import { LandingPage } from "@/components/landing-page";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { Dashboard } from "@/components/dashboard";
 
 export default function Home() {
+  const { wallet, status: walletStatus } = useWallet();
+  const { status: authStatus } = useAuth();
+  const nodeRef = useRef(null);
+
+  const isLoggedIn = wallet != null && authStatus === "logged-in";
+  const isLoading =
+    walletStatus === "in-progress" || authStatus === "initializing";
+
   return (
-    <div className="grid grid-rows-[0px_1fr_60px] items-center justify-items-center min-h-screen p-2 pb-20 max-sm:gap-10 sm:p-20 sm:pt-0">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <HomeContent />
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-1">
+        <SwitchTransition mode="out-in">
+          <CSSTransition
+            key={isLoggedIn ? "dashboard" : "landing"}
+            nodeRef={nodeRef}
+            timeout={400}
+            classNames="page-transition"
+            unmountOnExit
+          >
+            <div ref={nodeRef}>
+              {isLoggedIn ? (
+                <Dashboard />
+              ) : (
+                <LandingPage isLoading={isLoading} />
+              )}
+            </div>
+          </CSSTransition>
+        </SwitchTransition>
       </main>
-      <footer className="row-start-3 flex flex-col gap-4 items-center justify-center">
-        <div className="flex gap-6 flex-wrap items-center justify-center">
-          <a
-            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-            href="https://github.com/Crossmint/wallets-quickstart"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              aria-hidden
-              src="/file.svg"
-              alt="File icon"
-              width={16}
-              height={16}
-            />
-            View code
-          </a>
-          <a
-            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-            href="https://www.crossmint.com/quickstarts"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              aria-hidden
-              src="/window.svg"
-              alt="Window icon"
-              width={16}
-              height={16}
-            />
-            See all quickstarts
-          </a>
-          <a
-            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-            href="https://crossmint.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              aria-hidden
-              src="/globe.svg"
-              alt="Globe icon"
-              width={16}
-              height={16}
-            />
-            Go to crossmint.com →
-          </a>
-        </div>
-        <div className="flex">
-          <Image
-            src="/crossmint-leaf.svg"
-            alt="Powered by Crossmint"
-            priority
-            width={152}
-            height={100}
-          />
-        </div>
-      </footer>
     </div>
   );
 }

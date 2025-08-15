@@ -14,6 +14,7 @@
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-transition-group": "^4.4.5",
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.4"
   },
@@ -22,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-transition-group": "^4.4.12",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

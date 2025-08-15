@@ -95,4 +95,24 @@
   .filter-blue {
     filter: brightness(0) saturate(100%) invert(37%) sepia(90%) saturate(2066%) hue-rotate(210deg) brightness(97%) contrast(98%);
   }
+
+  /* Simple page transitions */
+  .page-transition-enter {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 400ms ease-out, transform 400ms ease-out;
+  }
+  .page-transition-exit {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .page-transition-exit-active {
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 400ms ease-in, transform 400ms ease-in;
+  }
 }
