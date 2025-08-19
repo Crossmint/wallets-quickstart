@@ -5,28 +5,22 @@ import { cn } from "@/lib/utils";
 
 const features = [
   {
-    title: "Smart Wallets",
+    title: "Launch Fast",
     description:
-      "Programmable wallets that enable transaction limits, recurring payments, and custom logic. Runs on Solana, Stellar, and EVM with full flexibility.",
-    iconPath: "/cog.svg",
+      "Integrate auth, create wallets, sponsor gas, and enable token transfers with just a few lines of code. No blockchain experience needed.",
+    iconPath: "/rocket.svg",
   },
   {
-    title: "Native Gas Sponsorship",
+    title: "Scale Big",
     description:
-      "Turn on gas sponsorship with a simple toggle for EVM and Solana. Crossmint covers all gas fees. We just invoice you every month.",
-    iconPath: "/zap.svg",
+      "All the APIs you need to power onramping, activity tracking, staking, debit cards and more. Built to grow with you.",
+    iconPath: "/trending-up.svg",
   },
   {
-    title: "No Vendor Lock-In",
+    title: "Stay Unlocked",
     description:
-      "Crossmint's wallets let you change signers as your needs change, minimizing disruption and allowing your users to keep their addresses and funds.",
-    iconPath: "/lock.svg",
-  },
-  {
-    title: "No blockchain engineers needed",
-    description:
-      "Easy APIs & SDKs for wallet data, transactions, bridging, and staking. Built for React and Node.js with no extra tooling required.",
-    iconPath: "/code.svg",
+      "Smart wallets with onchain 2FA, flexible recovery methods, and no vendor lock-in. Secure and ready for what’s next.",
+    iconPath: "/shield-check.svg",
   },
 ];
 
@@ -64,9 +58,18 @@ export function LandingPage({ isLoading }: { isLoading: boolean }) {
         {/* Content */}
         <div className="relative z-10 flex flex-col gap-12 text-white">
           <div className="flex flex-col gap-4">
-            <h1 className="text-6xl font-bold">Wallets Quickstart</h1>
+            <h1 className="text-6xl font-bold">Crossmint Wallets</h1>
             <p className="text-white/60 text-lg">
-              Create and interact with Crossmint wallets
+              Get started with the Crossmint Wallets Quickstart.{" "}
+              <a
+                href="https://github.com/crossmint/wallets-quickstart"
+                className="text-white"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Clone this repo
+              </a>{" "}
+              and try it out in minutes!
             </p>
           </div>
 
@@ -84,7 +87,7 @@ export function LandingPage({ isLoading }: { isLoading: boolean }) {
                   transitionDelay: showFeatures ? `${index * 150}ms` : "0ms",
                 }}
               >
-                <div className="w-10 h-10 border-white/20 border-2 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 border-white/20 border-2 rounded-full flex items-center justify-center self-center flex-shrink-0">
                   <Image
                     className="filter-green w-6"
                     src={feature.iconPath}
