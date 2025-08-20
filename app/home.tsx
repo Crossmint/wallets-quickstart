@@ -8,7 +8,7 @@ import { TransferFunds } from "@/components/transfer";
 import { LogoutButton } from "@/components/logout";
 import { LoginButton } from "@/components/login";
 import { Activity } from "@/components/activity";
-
+import { Swap } from "@/components/swap";
 export function HomeContent() {
   const { wallet, status: walletStatus } = useWallet();
   const { status: authStatus } = useAuth();
@@ -148,8 +148,13 @@ export function HomeContent() {
           </div>
 
           {/* Transfer Funds Section */}
-          <div className="bg-white rounded-2xl border shadow-sm p-6">
-            <TransferFunds />
+          <div className="flex flex-col gap-6">
+            <div className="bg-white rounded-2xl border shadow-sm p-6">
+              <TransferFunds />
+            </div>
+            <div className="bg-white rounded-2xl border shadow-sm p-6">
+              <Swap />
+            </div>
           </div>
 
           <Activity />

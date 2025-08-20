@@ -21,7 +21,9 @@ export function WalletBalance() {
     async function fetchBalances() {
       if (!wallet) return;
       try {
-        const balances = await wallet.balances(["usdxm"]);
+        const balances = await wallet.balances([
+          "sol:XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN",
+        ]);
         setBalances(balances);
       } catch (error) {
         console.error("Error fetching wallet balances:", error);
@@ -35,8 +37,8 @@ export function WalletBalance() {
     return Number(balance).toFixed(2);
   };
 
-  const usdxmToken = balances?.tokens.find((token) => token.symbol === "usdxm");
-  const usdxmBalance = formatBalance(usdxmToken?.amount || "0");
+  const usdcToken = balances?.usdc;
+  const usdcBalance = formatBalance(usdcToken?.amount || "0");
 
   const handleFund = async () => {
     if (!wallet) {
@@ -92,9 +94,9 @@ export function WalletBalance() {
     <div className="flex flex-col gap-4">
       {/* Header with Icon and Info */}
       <div className="flex items-center gap-3">
-        <Image src="/usdxm.svg" alt="USDXM" width={24} height={24} />
+        <Image src="/usdc.svg" alt="USDXM" width={24} height={24} />
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold">USDXM balance</h3>
+          <h3 className="text-lg font-semibold">USDC balance</h3>
           <div className="relative group">
             <div className="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center cursor-help">
               <span className="text-gray-500 text-xs font-medium">i</span>
@@ -106,10 +108,8 @@ export function WalletBalance() {
           </div>
         </div>
       </div>
-
       {/* Balance Display */}
-      <div className="text-4xl font-bold text-gray-900">$ {usdxmBalance}</div>
-
+      <div className="text-4xl font-bold text-gray-900">$ {usdcBalance}</div>
       {/* Add Money Button */}
       <div className="flex flex-col gap-3">
         <button
