@@ -11,6 +11,7 @@ if (!process.env.NEXT_PUBLIC_CROSSMINT_API_KEY) {
 }
 
 const chain = (process.env.NEXT_PUBLIC_CHAIN ?? "solana") as any;
+const plugins = (process.env.NEXT_PUBLIC_PLUGINS?.split(",") ?? []) as any;
 
 const customAppearance = {
   colors: {
@@ -45,6 +46,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             signer: {
               type: "email",
             },
+            plugins,
           }}
         >
           {children}
