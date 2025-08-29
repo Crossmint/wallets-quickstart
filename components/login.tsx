@@ -1,18 +1,25 @@
-"use client";
+import { StytchLogin } from "@stytch/nextjs";
+import { Products } from "@stytch/vanilla-js";
 
-import { useAuth } from "@crossmint/client-sdk-react-ui";
-import Image from "next/image";
+const REDIRECT_URL = "http://localhost:3000/authenticate";
 
-export function LoginButton() {
-  const { login } = useAuth();
+export function Login() {
+  const config = {
+    products: [Products.emailMagicLinks, Products.oauth],
+    emailMagicLinksOptions: {
+      loginRedirectURL: REDIRECT_URL,
+      loginExpirationMinutes: 60,
+      signupRedirectURL: REDIRECT_URL,
+      signupExpirationMinutes: 60,
+    },
+    oauthOptions: {
+      providers: [
+        {
+          type: "google",
+        },
+      ],
+    },
+  } as any;
 
-  return (
-    <button
-      className="flex items-center gap-2 py-2 px-3 rounded-full text-sm m-auto font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
-      onClick={login}
-    >
-      Login
-      <Image src="/log-in.svg" alt="Login" width={16} height={16} />
-    </button>
-  );
+  return <StytchLogin config={config} />;
 }

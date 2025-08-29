@@ -1,19 +1,49 @@
 "use client";
 
-import { useRef } from "react";
-import { useAuth, useWallet } from "@crossmint/client-sdk-react-ui";
+import { useEffect, useRef } from "react";
+import { useCrossmint, useWallet } from "@crossmint/client-sdk-react-ui";
 import { LandingPage } from "@/components/landing-page";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Dashboard } from "@/components/dashboard";
+import { useStytchUser } from "@stytch/nextjs";
+import { useStytch } from "@stytch/nextjs";
 
 export default function Home() {
-  const { wallet, status: walletStatus } = useWallet();
-  const { status: authStatus } = useAuth();
+  const { wallet, status: walletStatus, getOrCreateWallet } = useWallet();
+  const { user, isInitialized } = useStytchUser();
+  const stytch = useStytch();
   const nodeRef = useRef(null);
+  const { setJwt, crossmint } = useCrossmint();
 
-  const isLoggedIn = wallet != null && authStatus === "logged-in";
+  const isLoggedIn = wallet != null && stytch && user != null;
   const isLoading =
-    walletStatus === "in-progress" || authStatus === "initializing";
+    walletStatus === "in-progress" || isInitialized === false;
+
+
+  useEffect(() => {
+    // Link the logged in user to the Crossmint SDK
+    console.log("setting up session listener");
+    stytch.session.onChange(() => {
+      console.log("session changed");
+      const tokens = stytch.session.getTokens();
+      console.log("tokens", tokens);
+      setJwt(tokens?.session_jwt || undefined);
+    });
+  }, [stytch]);
+
+  useEffect(() => {
+    async function initializeWallet() {
+      await getOrCreateWallet({
+        chain: "solana",
+        signer: {
+          type: "email",
+          email: user?.emails?.[0]?.email,
+        },
+      });
+    }
+
+    initializeWallet();
+  }, [crossmint.jwt]);
 
   return (
     <div className="min-h-screen flex flex-col">

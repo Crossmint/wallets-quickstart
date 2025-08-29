@@ -1,10 +1,16 @@
 "use client";
 
-import { useAuth } from "@crossmint/client-sdk-react-ui";
+import { useStytch } from "@stytch/nextjs";
 import Image from "next/image";
+import { useCallback } from "react";
 
 export function LogoutButton() {
-  const { logout } = useAuth();
+  const stytch = useStytch();
+
+  const logout = useCallback(() => {
+    stytch.session.revoke();
+  }, [stytch]);
+
 
   return (
     <button

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { EmbeddedAuthForm } from "@crossmint/client-sdk-react-ui";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { Login } from "./login";
 
 const features = [
   {
@@ -113,8 +114,8 @@ export function LandingPage({ isLoading }: { isLoading: boolean }) {
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="w-full max-w-md bg-white rounded-3xl border shadow-lg overflow-hidden">
-            <EmbeddedAuthForm />
+          <div className="w-full flex justify-center items-center">
+            <Login />
           </div>
         )}
       </div>
