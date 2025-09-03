@@ -22,11 +22,8 @@ export default function Home() {
 
   useEffect(() => {
     // Link the logged in user to the Crossmint SDK
-    console.log("setting up session listener");
     stytch.session.onChange(() => {
-      console.log("session changed");
       const tokens = stytch.session.getTokens();
-      console.log("tokens", tokens);
       setJwt(tokens?.session_jwt || undefined);
     });
   }, [stytch]);
