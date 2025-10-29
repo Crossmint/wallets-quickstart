@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
     const tokenLocator =
       (CROSSMINT_ENV === "production" ? USDC_PROD : USDC_STAGING);
 
+      console.log("URL: ", `https://${CROSSMINT_ENV}.crossmint.com/api/2022-06-09/orders`);
     const response = await fetch(
       `https://${CROSSMINT_ENV}.crossmint.com/api/2022-06-09/orders`,
       {

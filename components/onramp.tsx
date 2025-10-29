@@ -31,7 +31,7 @@ export default function Onramp() {
           <div className="p-6">
             <div className="flex flex-col">
               {/* Step 1: Create order */}
-              { wallet != null && orderId == null && (
+              { wallet != null && (
                 <OnrampDeposit
                   amountUsd={amountUsd}
                   setAmountUsd={setAmountUsd}
