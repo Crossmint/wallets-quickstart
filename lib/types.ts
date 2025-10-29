@@ -35,6 +35,11 @@ export type CreateOrderResponse = {
 };
 
 export type ApiErrorResponse = {
-  error: string;
-  details?: any;
+  error: boolean | string;
+  details?: {
+    error: boolean;
+    message: string;
+    code: string;
+    parameters?: Record<string, string>;
+  };
 };
