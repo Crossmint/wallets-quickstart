@@ -16,8 +16,9 @@ export async function GET(
     }
 
     const { orderId } = (context?.params as { orderId: string });
+    const baseUrl = CROSSMINT_ENV === "production" ? "https://www.crossmint.com" : `https://${CROSSMINT_ENV}.crossmint.com`;
     const response = await fetch(
-      `https://${CROSSMINT_ENV}.crossmint.com/api/2022-06-09/orders/${orderId}`,
+      `${baseUrl}/api/2022-06-09/orders/${orderId}`,
       {
         method: "GET",
         headers: {
