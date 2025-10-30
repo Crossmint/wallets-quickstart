@@ -107,7 +107,16 @@ export function LandingPage({ isLoading }: { isLoading: boolean }) {
       </div>
 
       {/* Right side - Auth Form */}
-      <div className="flex items-center justify-center bg-gray-50 px-6 py-12 col-span-1 lg:col-span-3">
+      <div className="flex flex-col items-center justify-center bg-gray-50 px-6 py-12 col-span-1 lg:col-span-3">
+        <div className="lg:hidden mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Crossmint Wallets
+          </h1>
+          <p className="text-gray-600">
+            Get started with the Crossmint Wallets Quickstart
+          </p>
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />

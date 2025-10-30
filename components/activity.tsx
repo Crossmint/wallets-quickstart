@@ -14,7 +14,10 @@ export function Activity() {
     const fetchActivity = async () => {
       try {
         const activity = await wallet.experimental_activity();
-        setActivity(activity);
+        const filteredUsdxmActivity = activity.events.filter((event) =>
+          event.token_symbol?.startsWith("USDXM")
+        );
+        setActivity({ events: filteredUsdxmActivity });
       } catch (error) {
         console.error("Failed to fetch activity:", error);
       } finally {
