@@ -24,7 +24,11 @@ export function TransferFunds() {
       setExplorerLink(txn.explorerLink);
     } catch (err) {
       console.error("Transfer: ", err);
-      alert("Transfer: " + err);
+      if (err instanceof Error && err.name === "AuthRejectedError") {
+        return;
+      } else {
+        alert("Transfer: " + err);
+      }
     } finally {
       setIsLoading(false);
     }
