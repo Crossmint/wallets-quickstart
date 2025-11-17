@@ -2,17 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  Balances,
-  useCrossmint,
-  useWallet,
-} from "@crossmint/client-sdk-react-ui";
+import { Balances, useWallet } from "@crossmint/client-sdk-react-ui";
 import { cn } from "@/lib/utils";
 
 export function WalletBalance() {
-  const {
-    crossmint: { apiKey, jwt },
-  } = useCrossmint();
   const { wallet } = useWallet();
   const [balances, setBalances] = useState<Balances | null>(null);
   const [isFunding, setIsFunding] = useState(false);
@@ -42,33 +35,11 @@ export function WalletBalance() {
     if (!wallet) {
       return;
     }
-    if (apiKey.includes("_production_")) {
-      alert("Crossmint faucet is not available in production.");
-      return;
-    }
 
     setIsFunding(true);
     try {
       const fundingAmount = 10;
-      const response = await fetch(
-        `https://staging.crossmint.com/api/v1-alpha2/wallets/${wallet.address}/balances`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": apiKey,
-            Authorization: `Bearer ${jwt}`,
-          },
-          body: JSON.stringify({
-            amount: fundingAmount,
-            token: "usdxm",
-            chain: wallet.chain,
-          }),
-        }
-      );
-      if (response != null && !response.ok) {
-        return alert(`Failed to get USDXM: ${response.statusText}`);
-      }
+      await wallet.stagingFund(fundingAmount);
 
       // Optimistic UI update
       setBalances((prev) => {

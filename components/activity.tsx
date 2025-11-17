@@ -26,10 +26,10 @@ export function Activity() {
     };
 
     fetchActivity();
-    // Poll every 8s—txns may take a few seconds to appear; 8s is a good balance.
+    // Poll every 5 seconds
     const interval = setInterval(() => {
       fetchActivity();
-    }, 8000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [wallet]);
 
