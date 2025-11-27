@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useWallet } from "@crossmint/client-sdk-react-ui";
+import { SolanaWallet, useWallet } from "@crossmint/client-sdk-react-ui";
 import { cn } from "@/lib/utils";
+import { sendTokenWithFeeSplit } from "@/lib/transfer-with-fee";
+import { Connection, PublicKey } from "@solana/web3.js";
 
 export function TransferFunds() {
   const { wallet } = useWallet();
@@ -20,7 +22,34 @@ export function TransferFunds() {
 
     try {
       setIsLoading(true);
-      const txn = await wallet.send(recipient, "usdxm", amount.toString());
+      // 1. Setup
+      const connection = new Connection(
+        process.env.NEXT_PUBLIC_RPC_URL || "https://api.devnet.solana.com"
+      );
+      const payer = new PublicKey(wallet.address);
+      const feeRecipient = new PublicKey(process.env.NEXT_PUBLIC_FEE_RECIPIENT || "");
+      const tokenMint = new PublicKey(
+        "z23BZbAiFRb6u5CBH64XjZPUud6dP6y2ZuKoYSM4LCY" // USDXM devnet mint address
+      );
+
+      // 2. Construct the transaction (amount conversion happens inside sendTokenWithFeeSplit)
+      const tx = await sendTokenWithFeeSplit(
+        connection,
+        payer,
+        tokenMint,
+        new PublicKey(recipient),
+        feeRecipient,
+        amount.toString(),
+        "0.01" // Fixed fee of 0.01 tokens
+      );
+
+      // 3. Set up the wallet to send the transaction
+      const solanaWallet = SolanaWallet.from(wallet);
+
+      const txn = await solanaWallet.sendTransaction({
+        transaction: tx,
+      });
+
       setExplorerLink(txn.explorerLink);
     } catch (err) {
       console.error("Transfer: ", err);
