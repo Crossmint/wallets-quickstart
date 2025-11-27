@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SolanaWallet, useWallet } from "@crossmint/client-sdk-react-ui";
 import { cn } from "@/lib/utils";
-import { sendTokenWithFeeSplit } from "@/lib/transfer-with-fee";
+import { createTransferTxWithFeeSplit } from "@/lib/transfer-with-fee";
 import { Connection, PublicKey } from "@solana/web3.js";
 
 export function TransferFunds() {
@@ -33,7 +33,7 @@ export function TransferFunds() {
       );
 
       // 2. Construct the transaction (amount conversion happens inside sendTokenWithFeeSplit)
-      const tx = await sendTokenWithFeeSplit(
+      const tx = await createTransferTxWithFeeSplit(
         connection,
         payer,
         tokenMint,

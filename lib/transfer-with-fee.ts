@@ -1,7 +1,6 @@
 import {
   Connection,
   PublicKey,
-  Transaction,
   TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
@@ -26,7 +25,7 @@ import { convertAmountToBaseUnits } from "./utils";
  * @param totalAmount     Total amount of USDC to send (as a string, e.g. "1.5" for 1.5 tokens)
  * @param feeAmount       Fixed fee amount to send to fee recipient (as a string, e.g. "0.01" for 0.01 tokens)
  */
-export async function sendTokenWithFeeSplit(
+export async function createTransferTxWithFeeSplit(
   connection: Connection,
   payer: PublicKey,
   tokenMint: PublicKey,
