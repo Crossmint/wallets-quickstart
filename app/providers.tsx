@@ -42,7 +42,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           appearance={customAppearance}
           createOnLogin={{
             chain: chain,
-            signer: {
+            recovery: {
               type: "email",
             },
           }}
