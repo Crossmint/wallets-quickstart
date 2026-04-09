@@ -1,14 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import { useAuth, useWallet } from "@crossmint/client-sdk-react-ui";
+import { useCrossmintAuth, useWallet } from "@crossmint/client-sdk-react-ui";
 import { LandingPage } from "@/components/landing-page";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Dashboard } from "@/components/dashboard";
 
 export default function Home() {
   const { wallet, status: walletStatus } = useWallet();
-  const { status: authStatus } = useAuth();
+  const { status: authStatus } = useCrossmintAuth();
   const nodeRef = useRef(null);
 
   const isLoggedIn = wallet != null && authStatus === "logged-in";

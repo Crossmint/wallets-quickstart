@@ -1,23 +1,20 @@
 import { useEffect, useState } from "react";
-import { type Activity, useWallet } from "@crossmint/client-sdk-react-ui";
+import { type Transfers, useWallet } from "@crossmint/client-sdk-react-ui";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function Activity() {
   const { wallet } = useWallet();
-  const [activity, setActivity] = useState<Activity | null>(null);
+  const [transfers, setTransfers] = useState<Transfers | null>(null);
   const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
 
   useEffect(() => {
     if (!wallet) return;
 
-    const fetchActivity = async () => {
+    const fetchTransfers = async () => {
       try {
-        const activity = await wallet.experimental_activity();
-        const filteredUsdxmActivity = activity.events.filter((event) =>
-          event.token_symbol?.startsWith("USDXM")
-        );
-        setActivity({ events: filteredUsdxmActivity });
+        const result = await wallet.transfers({ tokens: "usdxm" });
+        setTransfers(result);
       } catch (error) {
         console.error("Failed to fetch activity:", error);
       } finally {
@@ -25,10 +22,10 @@ export function Activity() {
       }
     };
 
-    fetchActivity();
+    fetchTransfers();
     // Poll every 5 seconds
     const interval = setInterval(() => {
-      fetchActivity();
+      fetchTransfers();
     }, 5000);
     return () => clearInterval(interval);
   }, [wallet]);
@@ -37,10 +34,8 @@ export function Activity() {
     return `${address.slice(0, 6)}...${address.slice(-6)}`;
   };
 
-  const formatTimestamp = (timestamp: number) => {
-    const date = new Date(
-      timestamp < 10000000000 ? timestamp * 1000 : timestamp
-    );
+  const formatTimestamp = (isoString: string) => {
+    const date = new Date(isoString);
     const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
     if (diffInMs < 0) {
@@ -70,16 +65,14 @@ export function Activity() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-gray-500 text-sm">Loading activity...</div>
           </div>
-        ) : activity?.events && activity.events.length > 0 ? (
+        ) : transfers?.data && transfers.data.length > 0 ? (
           <div className="flex-1 overflow-hidden">
             <div className="max-h-[378px] overflow-y-auto space-y-3">
-              {activity.events.map((event, index) => {
-                const isIncoming =
-                  event.to_address.toLowerCase() ===
-                  wallet?.address.toLowerCase();
+              {transfers.data.map((tx: any, index: number) => {
+                const isIncoming = tx.type === "wallets.transfer.in";
                 return (
                   <div
-                    key={event.transaction_hash}
+                    key={tx.transferId ?? tx.onChain?.txId ?? index}
                     className={cn(
                       "flex items-center justify-between p-3 rounded-lg transition-colors",
                       index % 2 === 0 ? "bg-white" : "bg-gray-100"
@@ -114,13 +107,15 @@ export function Activity() {
                             {isIncoming ? "Received" : "Sent"}
                           </span>
                           <span className="text-xs text-gray-500">
-                            {formatTimestamp(event.timestamp)}
+                            {tx.completedAt
+                              ? formatTimestamp(tx.completedAt)
+                              : ""}
                           </span>
                         </div>
                         <div className="text-xs text-gray-500 font-mono">
                           {isIncoming
-                            ? `From ${formatAddress(event.from_address)}`
-                            : `To ${formatAddress(event.to_address)}`}
+                            ? `From ${formatAddress(tx.sender?.address ?? "")}`
+                            : `To ${formatAddress(tx.recipient?.address ?? "")}`}
                         </div>
                       </div>
                     </div>
@@ -132,10 +127,10 @@ export function Activity() {
                             isIncoming ? "text-green-600" : "text-primary"
                           )}
                         >
-                          {isIncoming ? "+" : "-"}${event.amount}
+                          {isIncoming ? "+" : "-"}${tx.token?.amount ?? "0"}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {event?.token_symbol}
+                          {tx.token?.symbol ?? tx.token?.locator}
                         </div>
                       </div>
                     </div>
