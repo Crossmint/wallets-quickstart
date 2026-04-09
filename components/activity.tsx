@@ -13,7 +13,10 @@ export function Activity() {
 
     const fetchTransfers = async () => {
       try {
-        const result = await wallet.transfers({ tokens: "usdxm" });
+        const result = await wallet.transfers({
+          tokens: "usdxm",
+          status: "successful",
+        });
         setTransfers(result);
       } catch (error) {
         console.error("Failed to fetch activity:", error);
@@ -115,7 +118,9 @@ export function Activity() {
                         <div className="text-xs text-gray-500 font-mono">
                           {isIncoming
                             ? `From ${formatAddress(tx.sender?.address ?? "")}`
-                            : `To ${formatAddress(tx.recipient?.address ?? "")}`}
+                            : `To ${formatAddress(
+                                tx.recipient?.address ?? ""
+                              )}`}
                         </div>
                       </div>
                     </div>
