@@ -10,7 +10,7 @@ if (!process.env.NEXT_PUBLIC_CROSSMINT_API_KEY) {
   throw new Error("NEXT_PUBLIC_CROSSMINT_API_KEY is not set");
 }
 
-const chain = (process.env.NEXT_PUBLIC_CHAIN ?? "solana") as any;
+const chain = (process.env.NEXT_PUBLIC_CHAIN ?? "base-sepolia") as any;
 
 const customAppearance = {
   colors: {
