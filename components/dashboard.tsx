@@ -121,11 +121,11 @@ export function Dashboard() {
             <TransferFunds />
             {/* WAL-6433: TransferDialog for reproducing the AA23 revert bug */}
             <div className="bg-white rounded-2xl border shadow-sm p-6">
-              <h3 className="text-lg font-semibold mb-1">NFT Transfer (WAL-6433)</h3>
+              <h3 className="text-lg font-semibold mb-1">ERC-20 Transfer (WAL-6433)</h3>
               <p className="text-sm text-gray-500 mb-4">
                 Transfer via approval flow — reproduces the AA23 revert issue
               </p>
-              <TransferDialog productId="test-product-id" />
+              <TransferDialog />
             </div>
             <Activity />
           </div>
