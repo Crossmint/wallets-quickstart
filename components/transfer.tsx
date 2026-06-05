@@ -10,7 +10,7 @@ export function TransferFunds() {
   const [amount, setAmount] = useState<number | null>(null);
   const [amountInput, setAmountInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [explorerLink, setExplorerLink] = useState<string | null>(null);
+  const isStaging = process.env.NEXT_PUBLIC_CROSSMINT_API_KEY?.includes("staging");
 
   async function handleOnTransfer() {
     if (wallet == null || recipient == null || amount == null) {
@@ -18,10 +18,17 @@ export function TransferFunds() {
       return;
     }
 
+    if (recipient === wallet.address) {
+      alert("You cannot send funds to your own wallet.");
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const txn = await wallet.send(recipient, "usdxm", amount.toString());
-      setExplorerLink(txn.explorerLink);
+      await wallet.send(recipient, "usdxm", amount.toString());
+      setRecipient(null);
+      setAmount(null);
+      setAmountInput("");
     } catch (err) {
       console.error("Transfer: ", err);
       if (err instanceof Error && err.name === "AuthRejectedError") {
@@ -38,7 +45,20 @@ export function TransferFunds() {
     <div className="bg-white rounded-2xl border shadow-sm p-6">
       <div className="flex flex-col gap-4">
         <div>
-          <h3 className="text-lg font-semibold mb-1">Transfer funds</h3>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-lg font-semibold">Transfer funds</h3>
+            {isStaging && (
+              <div className="relative group">
+                <div className="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center cursor-help">
+                  <span className="text-gray-500 text-xs font-medium">i</span>
+                </div>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-md w-56 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  This environment uses devnet blockchain. To complete a transfer, the recipient must have a devnet wallet.
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+            )}
+          </div>
           <p className="text-sm text-gray-500">Send funds to another wallet</p>
         </div>
 
@@ -88,7 +108,7 @@ export function TransferFunds() {
           />
         </div>
 
-        {/* Transfer Button */}
+        {/* Transfer Button */}        
         <button
           className={cn(
             "w-full py-3 px-4 rounded-full text-sm font-medium transition-colors",
@@ -102,17 +122,6 @@ export function TransferFunds() {
           {isLoading ? "Transferring..." : "Transfer"}
         </button>
 
-        {/* Explorer Link */}
-        {explorerLink && !isLoading && (
-          <a
-            href={explorerLink}
-            className="text-sm text-blue-600 hover:text-blue-800 text-center transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            → View transaction
-          </a>
-        )}
       </div>
     </div>
   );
