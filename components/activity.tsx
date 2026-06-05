@@ -73,6 +73,10 @@ export function Activity() {
             <div className="max-h-[378px] overflow-y-auto space-y-3">
               {transfers.data.map((tx: any, index: number) => {
                 const isIncoming = tx.type === "wallets.transfer.in";
+                const explorerUrl = tx.onChain?.explorerLink ?? null;
+                const counterpartyAddress = isIncoming
+                  ? tx.sender?.address
+                  : tx.recipient?.address;
                 return (
                   <div
                     key={tx.transferId ?? tx.onChain?.txId ?? index}
@@ -116,11 +120,15 @@ export function Activity() {
                           </span>
                         </div>
                         <div className="text-xs text-gray-500 font-mono">
-                          {isIncoming
-                            ? `From ${formatAddress(tx.sender?.address ?? "")}`
-                            : `To ${formatAddress(
-                                tx.recipient?.address ?? ""
-                              )}`}
+                          {isIncoming ? "From" : "To"}{" "}
+                          <a
+                            href={explorerUrl ?? undefined}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline text-blue-600 hover:text-blue-800 transition-colors"
+                          >
+                            {counterpartyAddress ? formatAddress(counterpartyAddress) : ""}
+                          </a>
                         </div>
                       </div>
                     </div>
